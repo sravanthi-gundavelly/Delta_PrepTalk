@@ -1,0 +1,228 @@
+﻿
+@{
+    ViewData["Title"] = "Simulate";
+    Layout = "~/Views/Shared/NewLayOut.cshtml";
+}
+<link rel="stylesheet" href="~/css/botuitheme.css" />
+<link rel="stylesheet" href="~/css/botui.css" />
+<style>
+    .profil > img.agent {
+        content: url("/images/jessie.jpg");
+    }
+
+    .profil > img.human {
+        /*content: url("/images/jessie.jpg");*/
+        border-radius: 50%;
+    }
+</style>
+<!--Content area starts-->
+<div class="content_area" ng-app="myApp" ng-controller="myCtrl" ng-init="displaystart('DeltaFaucet');StartAssessment()">
+    <div class="content_container">
+        <audio id="sysAudio" autoplay controls hidden="hidden">
+            <source id="audSource" type="audio/wav">
+        </audio>
+        <!--Path Nav Starts-->
+        <div class="path_nav">
+            <ul>
+                <li><a href="../Home/Home">Home</a></li>
+                <li><a href="../Assessment/Assessment">Simulate   </a></li>
+                <li><span> Understanding the ‘Showers & Body Sprays’ Products </span></li>
+            </ul>
+        </div>
+        <!--Path Nav Ends-->
+
+        <div class="page_title">
+            <div class="row">
+                <div class="col-md-6">
+                    <h1>Understanding the ‘Showers & Body Sprays’ Products</h1>
+                    @*<p>
+                        Small description about simulator goes here in this place holder. Thanks to voice technology, participants chat with Jessica just like they would any other customer. Tackle new challenges, bolster skills, and create more confident team players by practicing any of the scenarios listed below.
+                    </p>*@
+                </div>
+                <div class="col-md-12" id="fullaudio"  style="display:none;">
+                    <audio id="simulateaudio" controls style="width: inherit;">
+                        <source id="simulateSource" type="audio/wav">
+                    </audio>
+                </div>
+            </div>
+        </div>
+
+        <!--Simulate Page Starts-->
+        <div class="simulate_box">
+            <div class="row ">
+                <div class="col-md-6 ">
+                    <div id="startAudio" class="botui-app-container card shadow chat_box">
+                        <div id="my-botui-app">
+                            <bot-ui></bot-ui>
+                        </div>
+                        <div>
+                            <button class=" btn_main" ng-click="evaluate()">Evaluate</button>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="col-md-6" id="micimage" style="display:none;">
+                    <img src="~/images/audio.gif" class="audiowidth" />
+                </div>
+                <div class="col-sm-6" id="assessscore" style="display:none;">
+                    <div class="card shadow chat_bo chat_box" style="height:500px;overflow:auto;font-size:12px; padding: 0px !important;">
+                        <table class="table scores_table">
+                            <thead>
+                                <tr>
+                                    <th>PrepTalk Question</th>
+                                    <th>Sales Associate Response</th>
+                                    <th>Technical Score (A)</th>
+                                    <th>Soft-Skill Score (B)</th>
+                                    <th>Total Score (A + B)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                <tr ng-repeat="data in ScoreList">
+                                    <td>{{data.question}}</td>
+                                    <td>{{data.text}}</td>
+                                    <td ng-class="data.tclass">
+                                        <span class="scores red">
+                                            {{data.tscore}}
+                                        </span>
+                                    </td>
+                                    <td ng-class="data.eclass">
+                                        <span class="scores green">
+                                            {{data.escore}}
+                                        </span>
+                                    </td>
+                                    <td ng-class="data.teclass">
+                                        <span class="scores orange">
+                                            {{(data.escore)*1 + (data.tscore)*1 }}
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr style="background-color:#dfe2f4">
+                                    <td colspan="2">Total</td>
+                                    <td ng-class="data.totaltclass">{{totalTQ }}</td>
+                                    <td ng-class="data.totaleclass">{{totalEQ}}</td>
+                                    <td ng-class="data.totalteclass">{{(totalTQ *1)+ (totalEQ*1) }}</td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+
+                        <div class="text-center" style="padding:10px" id="legends" style="display:none;">
+                            <div class="socres_info">
+                                <p>
+                                    <b>Score</b>
+                                    <span class="score_green"></span> >= 7
+                                    <span class="score_orange"></span> >= 5
+                                    <span class="score_red"></span> >= 5
+                                    <b>Total Score</b>
+                                    <span class="score_green"></span> >= 7
+                                    <span class="score_orange"></span> >= 5
+                                    <span class="score_red"></span> >= 5
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                @*<div class="col-md-6">
+                <div class="chat_box">
+                    <div class="chat_history">
+                        <div class="incoming_chat">
+                            <div class="incoming_chat_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div>
+                            <div class="received_chat">
+                                <div class="received_withd_chat">
+                                    <p>
+                                        Test which is a new approach to have all
+                                        solutions
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="outgoing_chat">
+                            <div class="outgoing_chat_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div>
+                            <div class="sent_chat">
+                                <p>
+                                    Test which is a new approach to have all
+                                    solutions
+                                </p>
+                            </div>
+                        </div>
+                        <div class="incoming_chat">
+                            <div class="incoming_chat_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div>
+                            <div class="received_chat">
+                                <div class="received_withd_chat">
+                                    <p>Test, which is a new approach to have</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="outgoing_chat">
+                            <div class="outgoing_chat_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div>
+
+                            <div class="sent_chat">
+                                <p>Apollo University, Delhi, India Test</p>
+                            </div>
+                        </div>
+                        <div class="incoming_chat">
+                            <div class="incoming_chat_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div>
+                            <div class="received_chat">
+                                <div class="received_withd_chat">
+                                    <p>
+                                        We work directly with our designers and suppliers,
+                                        and sell direct to you, which means quality, exclusive
+                                        products, at a price anyone can afford.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="outgoing_chat">
+                            <div class="outgoing_chat_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div>
+
+                            <div class="sent_chat">
+                                <p>
+                                    Test which is a new approach to have all
+                                    solutions
+                                </p>
+                            </div>
+                        </div>
+                        <div class="incoming_chat">
+                            <div class="incoming_chat_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div>
+                            <div class="received_chat">
+                                <div class="received_withd_chat">
+                                    <p>Test, which is a new approach to have</p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="evaluate_btn text-right">
+                        <a href="simulate-evaluate.html" class=" btn_main">
+                            Evaluate
+                        </a>
+                    </div>
+                </div>
+            </div>*@
+                @*<div class="col-md-6">
+
+            </div>*@
+            </div>
+        </div>
+        <!--Simulate Page Ends-->
+
+
+
+    </div>
+</div>
+<!--Content area ends-->
+
+<script src="~/js/angular.js/angular.min.js"></script>
+<script type="text/javascript">
+
+
+</script>
+<script src="~/js/botui/botui.min.js"></script>
+<script src="~/js/botui/botui.js"></script>
+<script src="~/js/vue/vue.min.js"></script>
+<script src="~/js/audio.js"></script>
+<script src="~/js/index.js"></script>
+<script src="~/js/Url.js"></script>

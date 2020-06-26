@@ -1,0 +1,256 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    @*<link rel="stylesheet" href="~/css/botuitheme.css" />
+        <link rel="stylesheet" href="~/css/botui.css" />*@
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="~/js/webchat.js"></script>
+    @*<script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>*@
+
+    @*<script src="https://cdn.botframework.com/botframework-webchat/latest/botchat.js"></script>*@
+    <script src="~/js/Url.js"></script>
+
+    <title>PrepTalk Home</title>
+</head>
+<body>
+    <!--Sidebare starts-->
+    <div class="sidebar">
+
+        <!--Logo starts-->
+        <div class="logo">
+            <img src="../images/prepstatic.jpg" alt="PrepTalk">
+        </div>
+        <!--Logo ends-->
+
+
+        <div class="main_menu">
+            <ul>
+                <li>
+                    <a class="@(ViewBag.current == "Home" ? "active" :"")" href="../Home/Home">
+                        <img src="../images/menu-icon-1.png" alt="">
+                        Home
+                    </a>
+                </li>
+                <li>
+                    <a class=" @(ViewBag.current == "Simulate" ? "active" :"")" href="@Url.Action("Assessment", "Assessment")">
+                        <img src="../images/menu-icon-2.png" alt="">
+                        Simulate
+                    </a>
+                </li>
+                <li>
+                    <a class="  @(ViewBag.current == "Analyze" ? "active" :"")" href="../Home/Analysis">
+                        <img src="../images/menu-icon-3.png" alt="">
+                        Analyze
+                    </a>
+                </li>
+                <li>
+                    <a class="  @(ViewBag.current == "Micro" ? "active" :"")" href="../Home/MicroLearn">
+                        <img src="../images/menu-icon-4.png" alt="">
+                        Micro-Learning
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+
+    </div>
+    <div class="sidebar_overlay">
+        <a class="menu_close" href="#"><i class="fa fa-times-circle" aria-hidden="true"></i></a>
+    </div>
+    <!--Sidebar Ends-->
+    <!--Right side content area starts-->
+    <div class="right_area">
+
+        <!--Header Starts-->
+        <header class="header">
+            <div class="row">
+                <div class="col-4">
+                    <div class="powered_by">
+                        <a class="menu_btn" href="javascript:void(0);"><i class="fa fa-bars" aria-hidden="true"></i></a>
+                        <p>
+                            <span>Powered by</span>
+                            <img src="../images/CInDE Color (002).png" alt="">
+                        </p>
+                    </div>
+                </div>
+                <div class="col-8 text-right">
+                    <ul class="header-menu">
+                        <li>
+                            <img src="~/images/deltalogo.jpg" />
+                        </li>
+                        <li>
+                            <a href=".." onclick="clearsession()">Logout</a>
+                        </li>
+                        <li>
+                            <a href="#" class="myaccount">
+                                My Account
+                                <span>
+                                    <img id="userimage" alt="">
+                                </span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </header>
+        <!--Header ends-->
+        <!--Content area starts-->
+
+
+
+        <partial name="_CookieConsentPartial" />
+        <main role="main">
+            <div>
+                @RenderBody()
+
+            </div>
+
+        </main>
+
+        <!--Content area ends-->
+
+        <footer>
+            <a onclick="chatDemo()" class="chat_button_img">
+                <img src="../images/chat-icon.png" alt="Alternate Text" />
+            </a>
+            <div class="row">
+                <div class="col-sm-6">
+                    <p>For Further Inofrmation, Please contact <a href="mailto:mrinal.chakraborty@pacteraedge.com">mrinal.chakraborty@pacteraedge.com</a> </p>
+                    <span class="copyrights"> @DateTime.Now.Year Pactera Edge. All rights reserved.</span>
+                </div>
+                <div class="col-sm-6 footer-right">
+                    <a href="#" class="footer-logo">
+                        <img src="../images/logo-lighter.png" alt="">
+                    </a>
+                    <a href="https://www.pacteraedge.com/" target="_blank" class="footer-site-link">Visit PacteraEdge.com</a>
+                </div>
+            </div>
+        </footer>
+
+        <div id="showbot" style="float:right;display:none;">
+            <div id="bot" style="position:fixed;bottom:0;height:600px;" />
+        </div>
+
+    </div>
+    <!--Right side content area ends-->
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="~/js/script.js"></script>
+    <script src="~/vendor/jquery/jquery.min.js"></script>
+    <script src="~/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- Core plugin JavaScript-->
+    <script src="~/vendor/jquery-easing/jquery.easing.min.js"></script>
+    <!-- Custom scripts for all pages-->
+    <script src="~/js/sb-admin-2.min.js"></script>
+    <script src="~/js/Url.js"></script>
+    <script>
+        var user = localStorage.getItem("userimage");
+        document.getElementById("userimage").src = '/images/' + localStorage.getItem("userimage");
+        function clearsession() {
+            localStorage.setItem("UserName", "");
+            localStorage.setItem("session", "");
+            localStorage.clear();
+        }
+    </script>
+    <script>
+         localStorage.setItem("name", "@ViewBag.UserName");
+            function chatDemo() {
+
+                var user = localStorage.getItem("name");
+                if ($("#showbot").css("display") == "none") {
+                    $("#showbot").css("display", "block");
+
+                    const styleOptions = {
+
+                        // Colors
+                        bubbleBackground: 'rgba(217, 217, 217, 0.15)',
+                        bubbleFromUserBackground: '#717277',
+                        bubbleFromUserTextColor: 'white',
+                        bubbleMaxWidth: 600, // maximum width of text message
+
+                        // Avatar
+                        //avatarSize: 100,
+                        botAvatarImage: '/images/bot.png',
+                        botAvatarInitials: 'Bt', // doesn't seem to work
+                        userAvatarImage: '/images/' + localStorage.getItem("userimage"),
+                        userAvatarInitials: user, // doesn't seem to work
+
+                        // Send box
+                        hideSendBox: false,
+                        hideUploadButton: false, // doesn't seem to work
+                        sendBoxButtonColor: '#767676',
+                        sendBoxButtonColorOnDisabled: '#CCC',
+                        sendBoxButtonColorOnFocus: '#333',
+                        sendBoxButtonColorOnHover: '#333',
+                        sendBoxHeight: 40,
+
+                        // Suggested actions
+                        suggestedActionTextColor: 'black',
+                        suggestedActionBorder: `solid 2px #009682`,
+                        suggestedActionHeight: 30,
+
+                    };
+
+                    const store = window.WebChat.createStore({}, ({ dispatch }) => next => action => {
+                        if (action.type === 'DIRECT_LINE/CONNECT_FULFILLED') {
+                            // When we receive DIRECT_LINE/CONNECT_FULFILLED action, we will send an event activity using WEB_CHAT/SEND_EVENT
+                            dispatch({
+                                type: 'WEB_CHAT/SEND_EVENT',
+                                payload: {
+                                    name: 'webchat/join',
+                                    value: { language: window.navigator.language }
+                                }
+                            });
+                        }
+                        return next(action);
+                    });
+
+                    window.WebChat.renderWebChat(
+                        {
+                            directLine: window.WebChat.createDirectLine({
+                                token:"d8CxxMYFaxI.P5WoClKGQToAdjlYanWbfxVvQtaZ3m6K72IE1kETQPU",
+                               // token: '8U6FceURryU.gitrDuIO5rsUKlESplgvOf39hD7J6wpVdtZ1KBvAWYE',
+                            }),
+                            userID: localStorage.getItem("UserID"),
+                            userName: user,
+                            chatTitle: "ChatBot",
+                            store,
+                            styleOptions
+
+                        },
+                        document.getElementById('bot'))
+
+                    $("#bot").css("border", "1px solid grey");
+                    document.getElementsByClassName("css-mfy564")[1].innerHTML = "<h5 style='background: #313443;color:#e9ecef;; height: 45px;padding: 10px;'><img style='height:20px;' src='/images/prepstatic.JPG' />  for Delta [Chat]<span style='float:right;color:#e9ecef;;cursor:pointer;' onclick='closechat()'>×</span></h5>";
+
+                 //   document.getElementsByClassName("css-mfy564")[1].innerHTML = "<h5 style='background: #1c447f;color:white; height: 45px;padding: 10px;'>PrepTalk Chat<span style='float:right;color:white;cursor:pointer;' onclick='closechat()'>×</span></h5>";
+                   // $(".css-mfy564 span").innerText = "Hello";
+                }
+                else {
+                    $("#showbot").css("display", "none");
+                }
+
+
+
+            }
+            function closechat() {
+                if ($("#showbot").css("display") == "none") {
+                    $("#showbot").css("display", "block");
+                }
+                else {
+                    $("#showbot").css("display", "none");
+                }
+            }
+    </script>
+</body>
+</html>

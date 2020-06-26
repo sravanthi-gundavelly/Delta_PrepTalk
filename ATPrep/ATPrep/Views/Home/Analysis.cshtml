@@ -1,0 +1,93 @@
+﻿
+@{
+    ViewData["Title"] = "Analyze";
+    Layout = "~/Views/Shared/NewLayOut.cshtml";
+}
+
+    <div class="content_area" ng-app="analysis" ng-controller="analysiscontroller" ng-init="ready()">
+        <div class="content_container">
+
+            <!--Path Nav Starts-->
+            <div class="path_nav">
+                <ul>
+                    <li><a href="../Home/Home">Home</a></li>
+                    <li><span>Analyze</span></li>
+                </ul>
+            </div>
+            <!--Path Nav Ends-->
+            <!--Bannewr area starts-->
+            <div class="inner_banner_area" style="background-image: url('../images/analyze_banner.jpg');">
+                <div class="inner_banner_content">
+                    <h2>Analyze</h2>
+                    <p>Here you’ll find a suite of data tools designed to make measuring and processing assessment results easy. Candidate responses are run through scoring algorithms to offer greater clarity on individual strengths and weaknesses, creating new opportunities for productive dialogue between supervisors and their teams.</p>
+                </div>
+            </div>
+            <!--Bannewr area ends-->
+            <!--Feature widget starts-->
+            <div class="content_widget">
+                <div class="row">
+
+                    <div class="col-md-4">
+                        <div class="content_item">
+                            <img src="../images/analyze_icon_1.png" alt="">
+                            <h3>Simple Table Analytics</h3>
+                            <p>
+                                Our system outputs an intuitive tabular view of an individual’s results for every conversation, which makes gathering insights easy. And also provides a benchmark of team performance.
+                                The generated table provides numerical scoring of the simulated calls across three core metrics: Technical Score, Soft-Skill Score, and Total Score (Tech + Soft-Skill). A quick look at the table provides insights on which area one must focus their training to earn higher customer satisfaction scores.
+                            </p>
+                            <a href="@Url.Action("Analyze","Analyze")" class=" btn_main">
+                                View Analysis
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="content_item">
+                            <img src="../images/analyze_icon_2.png" alt="">
+                            <h3>Visualization Dashboards</h3>
+                            <p>Results are seamlessly translated into informative, presentation-ready visualizations that make identifying insights – including how an individuals’ performance compares to other participants – easy. These charts are especially helpful for supervisors when advising sales associates, as they allow them to quickly point out both areas of strength and opportunities for improvement.</p>
+                            <a onclick="showUserPageByRole()" id="visual" href="" class=" btn_main">
+                                View Analysis
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="content_item">
+                            <img src="../images/analyze_icon_3.png" alt="">
+                            <h3>Text Analytics</h3>
+                            <p>Results are seamlessly translated into informative, presentation-ready visualizations that make identifying insights – including how an individuals’ performance compares to other participants – easy. These charts are especially helpful for supervisors when advising sales associates, as they allow them to quickly point out both areas of strength and opportunities for improvement.</p>
+                            <a href="../Analyze/analytic" class=" btn_main">
+                                View Analysis
+                            </a>
+                        </div>
+                    </div>
+
+
+
+                </div>
+            </div>
+            <!--Feature widget ends-->
+
+        </div>
+    </div>
+    <!--Content area ends-->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+    <script>
+
+        var app = angular.module('analysis', []);
+        app.controller('analysiscontroller', function ($scope, $timeout) {
+            $scope.userRole = localStorage.getItem("Role");
+        });
+        function showUserPageByRole() {
+            var userRole = localStorage.getItem("Role");
+            var a = document.getElementById('visual'); //or grab it by tagname etc
+            if (userRole == 'User') {
+                a.href = "../Analyze/RoleVisualise";
+
+            }
+            else {
+                a.href = "../Analyze/Visualise";
+            }
+        }
+    </script>

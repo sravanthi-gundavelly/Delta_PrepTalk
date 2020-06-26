@@ -1,0 +1,443 @@
+﻿
+@{
+    ViewData["Title"] = "Simple Table Analytics";
+    Layout = "~/Views/Shared/NewLayOut.cshtml";
+}
+<style>
+    .active, .accordion1:hover {
+        background-color: #ccc;
+    }
+
+    audio {
+        background-color: #95B9C7;
+    }
+    .accordion1 {
+        /*background-color: #eee;*/
+        background-color: white;
+        color: #444;
+        cursor: pointer;
+        padding: 18px;
+        width: 100%;
+        border: none;
+        text-align: left;
+        outline: none;
+        font-size: 15px;
+        transition: 0.4s;
+        border: 1px solid lightgrey;
+        border-radius: 10px;
+    }
+
+    .panel {
+        padding: 0 18px;
+        display: none;
+        background-color: white;
+        overflow: hidden;
+    }
+</style>
+<!--Content area starts-->
+<div class="content_area">
+    <div class="content_container" ng-app="analysis" ng-controller="analysiscontroller" ng-init="ready()">
+
+        <!--Path Nav Starts-->
+        <div class="path_nav">
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="../Home/Analysis">Analyze</a></li>
+                <li ng-if="Role != 'User'"><span>Delta Advisor Team - Simple Table Analytics</span></li>
+                <li ng-if="Role == 'User'"><span>{{username}} - Simple Table Analytics</span></li>
+            </ul>
+        </div>
+        <!--Path Nav Ends-->
+
+        <div class="page_title">
+            <div class="row">
+                <div class="col-md-6">
+                    <h1 ng-if="Role != 'User'">Delta Advisor Team - Simple Table Analytics</h1>
+                    <h1 ng-if="Role == 'User'">{{username}} - Simple Table Analytics</h1>
+                </div>
+                <div class="col-md-6 text-right">
+                    <div class="socres_info">
+                        <p>
+                            <b>Score</b>
+                            <span class="score_green"></span> >= 7
+                            <span class="score_orange"></span> >= 5
+                            <span class="score_red"></span> >= 5
+                            <b>Total Score</b>
+                            <span class="score_green"></span> >= 7
+                            <span class="score_orange"></span> >= 5
+                            <span class="score_red"></span> >= 5
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--Scores List starts-->
+        <div class="scores_list">
+
+            <div id="accordion">
+
+                <div class="card" ng-repeat="item in datalist track by $index" ng-init="outerIndex=$index">
+                    <div class="card-header" id="heading_{{$index}}">
+                        <h4 class="mb-0">
+                            <a ng-click="toggle($index)" class="btn btn-link collapsed " data-toggle="collapse" data-target="#collapse_{{$index}}" aria-expanded="true" aria-controls="collapse_{{$index}}">
+                                <i id="showplus_{{$index}}" class="fa fa-plus">
+                                    &nbsp;<span ng-if="item.name != 'TeamScore'">{{item.name}}</span>
+                                    <span ng-if="item.name == 'TeamScore'">Team’s Score (as Average) </span>
+                                </i>
+                                <i id="showminus_{{$index}}" class="fa fa-minus" style="display:none;">
+                                    &nbsp;
+                                    <span ng-if="item.name != 'TeamScore'">{{item.name}}</span><span ng-if="item.name == 'TeamScore'">Team’s Score (as Average) </span>
+                                </i>
+                                @*<span ng-if="item.name != 'TeamScore'">{{item.name}}</span>
+        <span ng-if="item.name == 'TeamScore'">Team’s Score (as Average) </span>*@
+                            </a>
+                        </h4>
+                    </div>
+
+                    <div id="collapse_{{$index}}" class="collapse" aria-labelledby="heading_{{$index}}" data-parent="#accordion">
+                        <div class="card-body">
+                            <table class="table scores_table" id="table1">
+                                <thead>
+                                    <tr>
+                                        <th width="80" ng-if="item.name != 'TeamScore'"></th>
+                                        <th width="150" ng-if="item.name != 'TeamScore'">Session Date</th>
+                                        <th width="100">Technical Score (A)</th>
+                                        <th width="100">Soft-Skill Score (B)</th>
+                                        <th width="100">Total Score ( A + B )</th>
+                                        @*<th></th>
+                                        <th width="80"></th>*@
+                                    </tr>
+                                </thead>
+                                <tbody ng-repeat="tda in item.scoreList track by $index" ng-init="innerIndex=$index">
+                                    <tr>
+                                        @*<tr ng-style="{'background-color':tda.value1 === 'Average Score' ? '#add8e6' : 'white' }">*@
+                                        <td ng-if="item.name != 'TeamScore'">
+                                            <a ng-if="tda.name !='Average Score'" style="cursor:pointer;" ng-click="playFullAudio(tda.filename,$index,outerIndex)">
+                                                <i id="play_{{tda.filename}}" class="fa fa-play"></i>
+                                                <i id="pause_{{tda.filename}}" class="fa fa-pause" style="display:none;"></i>
+                                            </a>
+                                        </td>
+                                        <td ng-if="item.name != 'TeamScore'">{{tda.createddate}}</td>
+                                        <td ng-class="tda.tclass">
+
+                                            <span class="scores red" ng-if="tda.name !='Average Score'">
+                                                {{tda.tscore}}
+                                            </span>
+                                            <span ng-if="tda.name =='Average Score'">{{tda.tscore}}</span>
+                                        </td>
+                                        <td ng-class="tda.eclass">
+                                            <span class="scores green" ng-if="tda.name !='Average Score'">
+                                                {{tda.escore}}
+                                            </span>
+                                            <span ng-if="tda.name =='Average Score'">{{tda.escore}}</span>
+                                        </td>
+                                        <td ng-class="tda.teclass">
+                                            <span class="scores orange" ng-if="tda.name !='Average Score'">
+                                                {{((tda.tscore)*1 + (tda.escore)*1) }}
+                                            </span>
+                                            <span ng-if="tda.name =='Average Score'">{{((tda.tscore)*1 + (tda.escore)*1) }}</span>
+                                        </td>
+                                        @*<td id="{{outerIndex}}_{{$index}}">
+                                            <div ng-if="tda.name !='Average Score'">
+                                                <audio id="simulateaudio_{{outerIndex}}_{{$index}}" autoplay controls style="width:-webkit-fill-available;">
+                                                    <source id="simulateSource_{{outerIndex}}_{{$index}}" type="audio/wav">
+                                                </audio>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <button ng-if="tda.name !='Average Score'" class="download"></button>
+                                        </td>*@
+                                    </tr>
+                                    <tr style="display:none;" id="{{outerIndex}}_{{$index}}">
+                                        <td colspan="5">
+                                            <div class="card shadow mb-4" id="fullaudio">
+                                                <div class="card-body">
+                                                    <audio id="simulateaudio_{{outerIndex}}_{{$index}}" autoplay controls style="width:-webkit-fill-available;">
+                                                        <source id="simulateSource_{{outerIndex}}_{{$index}}" type="audio/wav">
+                                                    </audio>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+
+            </div>
+
+
+            <a href="../Home/Analysis" class="btn_main" style="width: fit-content;">
+                 Go Back
+            </a>
+
+
+        </div>
+        <!--Scores List ends-->
+
+    </div>
+</div>
+<!--Content area ends-->
+
+<script src="~/js/angular.js/angular.min.js"></script>
+
+<script>
+    var app = angular.module('analysis', []);
+    app.controller('analysiscontroller', function ($scope, $timeout) {
+        $scope.username = localStorage.getItem("UserName");
+        $scope.Role = localStorage.getItem("Role");
+        var userArray = []
+        var AnalysisData;
+        var grouped;
+        var acc = document.getElementsByClassName("accordion1");
+        var i;
+
+        var prevId = -1;
+        var parentprevId = -1;
+
+        $scope.toggle = function (index) {
+            if ($("#collapse_" + index).css("display") == "none") {
+                $("#collapse_" + index).css("display", "block");
+                $("#showplus_" + index).css("display", "none");
+                $("#showminus_" + index).css("display", "block");
+            }
+            else {
+                $("#collapse_" + index).css("display", "none");
+                $("#showplus_" + index).css("display", "block");
+                $("#showminus_" + index).css("display", "none");
+            }
+
+        }
+
+        //$scope.toggle = function (index) {
+        //    if ($("#panel_" + index).css("display") == "none") {
+        //        $("#panel_" + index).css("display", "block");
+        //        $("#showplus_" + index).css("display", "none");
+        //        $("#showminus_" + index).css("display", "block");
+        //    }
+        //    else {
+        //        $("#panel_" + index).css("display", "none");
+        //        $("#showplus_" + index).css("display", "block");
+        //        $("#showminus_" + index).css("display", "none");
+        //    }
+
+        //}
+
+
+        //$scope.playFullAudio = function (filename, index, parentindex) {
+        //    if (prevId != -1) {
+        //        $("#" + parentprevId + "_" + prevId).css("display", "none");
+        //        $('#simulateaudio_' + parentprevId + "_" + prevId).get(0).pause();
+        //        $('#simulateSource_' + parentprevId + "_" + prevId).attr('src', "");
+
+        //    }
+        //    if ($("#" + parentindex + "_" + index).css("display") == "none") {
+        //        $("#" + parentindex + "_" + index).css("display", "contents");
+        //        $('#simulateSource_' + parentindex + "_" + index).attr('src', Url + "get_voice_question_by_filename?filename=" + filename + "&location=blob");
+        //        $('#simulateaudio_' + parentindex + "_" + index).get(0).load();
+        //        $('#simulateaudio_' + parentindex + "_" + index).get(0).play();
+        //    }
+           
+
+        //    prevId = index;
+        //    parentprevId = parentindex;
+
+        //}
+
+
+        $scope.playFullAudio = function (filename, index, parentindex) {
+            if (prevId != -1) {
+                $("#" + parentprevId + "_" + prevId).css("display", "none");
+                $('#simulateaudio_' + parentprevId + "_" + prevId).get(0).pause();
+                $('#simulateSource_' + parentprevId + "_" + prevId).attr('src', "");
+
+            }
+            if ($("#" + parentindex + "_" + index).css("display") == "none") {
+                $("#" + parentindex + "_" + index).css("display", "contents");
+                $('#simulateSource_' + parentindex + "_" + index).attr('src', Url + "get_voice_question_by_filename?filename=" + filename + "&location=blob");
+                $('#simulateaudio_' + parentindex + "_" + index).get(0).load();
+                $('#simulateaudio_' + parentindex + "_" + index).get(0).play();
+            }
+
+
+            prevId = index;
+            parentprevId = parentindex;
+
+        }
+
+        $scope.toggleteam = function () {
+            if ($("#panel").css("display") == "none") {
+                $("#panel").css("display", "block");
+                $("#showplus").css("display", "none");
+                $("#showminus").css("display", "block");
+            }
+            else {
+                $("#panel").css("display", "none");
+                $("#showplus").css("display", "block");
+                $("#showminus").css("display", "none");
+            }
+
+        }
+
+
+        $scope.ready = function () {
+            $scope.datalist = [];
+            var data = new FormData();
+            data.append("userid", localStorage.getItem("UserID"));
+            data.append("role", localStorage.getItem("Role"));
+            data.append("category", "DeltaFaucet");
+            $.ajax({
+                url: Url + "get_users_evaluations_score",
+                type: 'POST',
+                data: data,
+                contentType: false,
+                processData: false,
+                success: function (res) {
+                    AnalysisData = res;
+                    console.log(res);
+                    var list = [];
+                    if (AnalysisData.length > 0) {
+                        currentUser = [];
+                        usrObj = { "name": "", "scoreList": [] }
+                        $timeout(function () {
+                            for (var i = 0; i < AnalysisData.length; i++) {
+                                if (currentUser.length == 0) {
+                                    usrObj.name = AnalysisData[i].name;
+                                    usrObj.scoreList.push(AnalysisData[i])
+                                    currentUser.push(usrObj.name);
+                                }
+                                else if (currentUser.indexOf(AnalysisData[i].name) < 0) {
+                                    userArray.push(usrObj)
+                                    usrObj = { "name": "", "scoreList": [] }
+                                    usrObj.name = AnalysisData[i].name;
+                                    usrObj.scoreList.push(AnalysisData[i])
+                                    currentUser.push(usrObj.name);
+                                }
+                                else {
+                                    usrObj.scoreList.push(AnalysisData[i]);
+                                }
+
+                            }
+                            userArray.push(usrObj)   // console.log(usrObj);
+                            console.log(userArray);
+
+                            for (var i = 0; i < userArray.length; i++) {
+                                //if (userArray[i].name != 'TeamScore') {
+                                for (var j = 0; j < userArray[i].scoreList.length; j++) {
+                                    var data = userArray[i].scoreList[j];
+                                    if (data.tscore >= 8)
+                                        data.tclass = "green"
+                                    else if (data.tscore >= 5)
+                                        data.tclass = "orange"
+                                    else if (data.tscore < 5)
+                                        data.tclass = "red"
+
+                                    if (data.escore >= 8)
+                                        data.eclass = "green"
+                                    else if (data.escore >= 5)
+                                        data.eclass = "orange"
+                                    else if (data.escore < 5)
+                                        data.eclass = "red"
+
+
+                                    if (parseFloat(data.escore) + parseFloat(data.tscore) >= 16)
+                                        data.teclass = "green"
+                                    else if (parseFloat(data.escore) + parseFloat(data.tscore) >= 10)
+                                        data.teclass = "orange"
+                                    else if (0 <= (parseFloat(data.escore) + parseFloat(data.tscore)) < 10)
+                                        data.teclass = "red"
+                                    //  }
+                                }
+
+
+                            }
+
+
+                            for (var i = 0; i <= userArray.length - 1; i++) {
+                                if (userArray[i].name != "TeamScore") {
+                                    var avgTQ = 0;
+                                    var avgEQ = 0;
+                                    for (var j = 0; j < userArray[i].scoreList.length; j++) {
+                                        if (userArray[i].scoreList[j].tscore != null) {
+                                            avgTQ = avgTQ + parseFloat(userArray[i].scoreList[j].tscore);
+                                        }
+                                        if (userArray[i].scoreList[j].escore != null) {
+                                            avgEQ = avgEQ + parseFloat(userArray[i].scoreList[j].escore);
+                                        }
+                                    }
+
+
+                                    var totalAvgTScore = (avgTQ / userArray[i].scoreList.length).toFixed(2);
+                                    var totalAvgEScore = (avgEQ / userArray[i].scoreList.length).toFixed(2);
+                                    var cssTClass;
+                                    var cssEClass;
+                                    var cssTEClass;
+                                    if (totalAvgTScore >= 8) {
+                                        cssTClass = "green";
+                                    }
+                                    else if (totalAvgTScore >= 5) {
+                                        cssTClass = "orange";
+                                    }
+                                    else {
+                                        cssTClass = "red";
+                                    }
+
+                                    if (totalAvgEScore >= 8) {
+                                        cssEClass = "green";
+                                    }
+                                    else if (totalAvgEScore >= 5) {
+                                        cssEClass = "orange";
+                                    }
+                                    else {
+                                        cssEClass = "red";
+                                    }
+
+
+                                    if (parseFloat(totalAvgTScore) + parseFloat(totalAvgEScore) >= 16)
+                                        cssTEClass = "green"
+                                    else if (parseFloat(totalAvgTScore) + parseFloat(totalAvgEScore) >= 10)
+                                        cssTEClass = "orange"
+                                    else if (0 <= (parseFloat(totalAvgTScore) + parseFloat(totalAvgEScore)) < 10)
+                                        cssTEClass = "red"
+                                    userArray[i].scoreList.push({
+                                        createddate: 'Average Score',
+                                        name: 'Average Score',
+                                        tscore: parseInt(totalAvgTScore),
+                                        escore: parseInt(totalAvgEScore),
+                                        tclass: cssTClass,
+                                        eclass: cssEClass,
+                                        teclass: cssTEClass
+                                    })
+
+                                }
+                            }
+                            $scope.datalist = userArray;
+
+                            console.log("scope:")
+                            console.log($scope.datalist)
+                        });
+
+                        console.log(grouped);
+                    }
+                    console.log(list);
+
+                }
+            })
+        }
+
+
+
+
+    });
+</script>
+
+

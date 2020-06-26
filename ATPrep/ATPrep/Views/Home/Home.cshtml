@@ -1,0 +1,149 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+    Layout = "~/Views/Shared/NewLayOut.cshtml";
+
+
+}
+
+
+<div class="content_area">
+    <div class="content_container">
+
+
+        <!--Bannewr area starts-->
+        <div class="banner_area">
+            <div class="banner_content">
+                <a href="#" class="banner_logo">
+                    <img src="~/images/banner_logo.png" alt="">
+                </a>
+                <ul class="banner_list">
+                    <li><a href="#">Machine Learning</a></li>
+                    <li><a href="#">Automatic Speach Recognition</a></li>
+                    <li><a href="#">Natural Language Processing</a></li>
+                    <li><a href="#">Text To Speach</a></li>
+                    <li><a href="#">Smart Conversational Analysis</a></li>
+                </ul>
+            </div>
+        </div>
+        <!--Bannewr area ends-->
+        <!--Works widget starts-->
+        <div class="works_widget">
+            <h2 class="title1">How PrepTalk® Works</h2>
+            <ul class="works_list">
+                <li>
+                    <img src="~/images/work_icon_6.png" alt="">
+                    <p>LMS: Human Agents/Sales People are trained on Delta Faucet’s learning and development material.</p>
+                </li>
+                <li>
+                    <img src="~/images/work_icon_2.png" alt="">
+                    <p>Human Agents initiates the conversation with PrepTalk® Simulate. The conversation is recorded for analysis.</p>
+                </li>
+                <li>
+                    <img src="~/images/work_icon_3.png" alt="">
+                    <p>VTT done for analytics and insights.</p>
+                </li>
+                <li>
+                    <img src="~/images/work_icon_4.png" alt="">
+                    <p>PrepTalk® Simulate runs the responses to AI algorithms for scoring.</p>
+                </li>
+                <li>
+                    <img src="~/images/work_icon_5.png" alt="">
+                    <p>Human-Agent gets the scoring of her responses. Also, she gets cues on softer aspects of the conversation.</p>
+                </li>
+            </ul>
+
+        </div>
+        <!--Works widget ends-->
+        <!--Feature widget starts-->
+        <div class="features_widget">
+            <div class="row">
+
+                <div class="col-md-4">
+                    <div class="feture_item">
+                        <div class="feture_img">
+                            <img src="~/images/training_1.jpg" alt="">
+                        </div>
+                        <div class="feture_content">
+                            <div class="feture_content_inner">
+                                <h3 class="feture_title">
+                                    <img src="~/images/icon-mic.png" alt="">
+                                    Simulate
+                                </h3>
+                                <p>
+                                    Use the simulate training tool to build skills and improve daily performance. Led by the personal voice assistant, Jessica, and powered by voice recognition technology, our synthetic workplace scenarios help teams build confidence and practice their customer service approach, thus empowering them on real-world calls and boosting their overall performance.
+                                </p>
+                                <a href="@Url.Action("Assessment", "Assessment")" class=" btn_main">
+                                    Start Training
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="feture_item">
+                        <div class="feture_img">
+                            <img src="~/images/training_2.jpg" alt="">
+                        </div>
+                        <div class="feture_content">
+                            <div class="feture_content_inner">
+                                <h3 class="feture_title">
+                                    <img src="~/images/icon-graph.png" alt="">
+                                    Analyze
+                                </h3>
+                                <p>
+                                    Leverage a suite of analytics tools to explore course results, breakdowns, and more. Our Analyze section is where managers and supervisors can see where their teams are finding success and where improvements can be made.
+                                </p>
+                                <a href="../Home/Analysis" class=" btn_main">
+                                    Explore Results
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="feture_item">
+                        <div class="feture_img">
+                            <img src="~/images/training_3.jpg" alt="">
+                        </div>
+                        <div class="feture_content">
+                            <div class="feture_content_inner">
+                                <h3 class="feture_title">
+                                    <img src="~/images/icon-headset.png" alt="">
+                                    Microlearning
+                                </h3>
+                                <p>
+                                    Discover bite-sized training assets that work into even the busiest workdays. The MicroLearning center is a gateway to useful digital content and is focused on offering easy-to-consume education that helps teams accomplish their goals and develop their skills.
+                                </p>
+                                <a href="../Home/MicroLearn" class=" btn_main">
+                                    Visit Learning Area
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <!--Feature widget ends-->
+
+    </div>
+</div>
+
+<script src="~/vendor/jquery/jquery.min.js"></script>
+<script>
+    var id = '@ViewBag.UserID';
+    if (id != '') {
+        localStorage.setItem("current", '@ViewBag.current');
+        localStorage.setItem("UserID", '@ViewBag.UserID');
+        localStorage.setItem("UserName", '@ViewBag.UserName');
+        localStorage.setItem("userimage", '@ViewBag.UserImage');
+        localStorage.setItem("time", '@ViewBag.time');
+        localStorage.setItem("Role", '@ViewBag.Role');
+    }
+
+</script>
+
+
+

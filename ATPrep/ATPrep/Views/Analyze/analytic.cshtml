@@ -1,0 +1,134 @@
+﻿
+@{
+    ViewData["Title"] = "Text Analytics";
+    Layout = "~/Views/Shared/NewLayOut.cshtml";
+}
+
+<link rel="stylesheet" type="text/css" href="~/css/pie.css">
+<link rel="stylesheet" type="text/css" href="~/css/barchart.css">
+@*<script src="~/js/charts/jquery.js"></script>*@
+
+<script src="~/js/charts/bubblechart.js"></script>
+
+<!--Content area starts-->
+<div class="content_area">
+    <div class="content_container" ng-app="analysis" ng-controller="analysiscontroller" ng-init="ready()">
+
+        <!--Path Nav Starts-->
+        <div class="path_nav">
+            <ul>
+                <li><a href="../Home/Home">Home</a></li>
+                <li><a href="../Home/Analysis">Analyze</a></li>
+                <li><span>Delta Advisor Excellence Team - Text Analytics</span></li>
+            </ul>
+        </div>
+        <!--Path Nav Ends-->
+
+        <div class="page_title">
+            <div class="row">
+                <div class="col-md-12">
+                    <h1>
+                        Delta Advisor Excellence Team - Text Analytics
+                        <span style="float:right;">
+                            <a target="_blank" href="https://app.powerbi.com/groups/me/reports/b9b5c325-e753-4c2a-84a7-6baddc32f474/ReportSection" class="btn_main">
+                                Rich PowerBI Dashboards
+                            </a>
+                        </span>
+                    </h1>
+                </div>
+            </div>
+        </div>
+
+        <div ng-app="analysis" ng-controller="analysiscontroller" ng-init="ready()">
+
+            <div class="analysis_dashboard">
+
+                <div class=" barchart-body">
+                    <div class="row ">
+                        <div class="col-md-6">
+                            <div class="card shadow mb-2">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 ">Conversation Topics</h6>
+                                </div>
+                                <div id="bubbleDisplay" width="300" style="height:400px;" class="img-fluid">
+
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card shadow mb-2">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 ">Sample testing of Simulate responses</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="card-body" id="piecharviz" width="300" style="height:360px;">
+                                        <img src="~/images/Pusers.JPG" style="height:inherit;" class="img-fluid" />
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row ">
+                        <div class="col-md-6">
+                            <div class="card shadow mb-2">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 ">Topic Modelling</h6>
+                                </div>
+                                <div class="card-body">
+                                    <img src="~/images/Topic1.png" style="height:400px;" class="img-fluid" />
+                                    @*<svg id="chart" width="300" height="300"></svg>*@
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card shadow mb-2">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 ">Sentiment Analysis</h6>
+                                </div>
+                                <div class="card-body">
+                                    <img src="~/images/Sentiment-analysis-chart.jpg" class="img-fluid" style="height:400px;" />
+                                    @*<svg id="chart1" width="300" height="300"></svg>*@
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <a href="../Home/Analysis" class="btn_main">
+                        Go Back
+                    </a>
+                </div>
+            </div>
+
+
+
+        </div>
+
+
+
+    </div>
+</div>
+<!--Content area ends-->
+
+<script src="~/lib/jquery/dist/jquery.js"></script>
+<script type="text/javascript" src="https://d3js.org/d3.v4.min.js"></script>
+
+<script>
+    $.ajax({
+        url: "https://preptalk-gi.bfmdev1.com/get_corpus_bag_of_words_for_plot",
+        type: 'GET',
+        processData: false,
+        contentType: false,
+        success: function (res) {
+            console.log(res)
+            bubbleDisplay(res);
+        },
+        error: function (xhr, status, error) {
+            console.log('error fetching  data')
+        }
+    });
+
+
+</script>

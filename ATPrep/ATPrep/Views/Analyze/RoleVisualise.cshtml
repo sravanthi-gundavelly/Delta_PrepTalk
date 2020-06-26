@@ -1,0 +1,409 @@
+﻿@{
+    ViewData["Title"] = "Visualization Dashboards";
+    Layout = "~/Views/Shared/NewLayOut.cshtml";
+}
+<script src="~/js/charts/d3.js"></script>
+@*<script src="~/js/charts/userpie.js"></script>
+<script src="~/js/charts/userbar.js"></script>*@
+<script src="~/js/charts/userbubblechart.js"></script>
+<link rel="stylesheet" type="text/css" href="~/css/pie.css">
+<link rel="stylesheet" type="text/css" href="~/css/barchart.css">
+
+<div class="content_area">
+    <div class="content_container" ng-app="roleapp" ng-controller="rolecontroller" ng-init="ready()">
+
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">
+                    {{username}} - Visualization Dashboards
+                </h6>
+            </div>
+            <div class="card-body barchart-body">
+                <div class="row col-md-12">
+                    <div class="col-md-6">
+                        <div class="card shadow mb-2">
+                            <div class="card-header py-3">
+                                <h5 class="m-0 font-weight-bold text-primary">User Average Technical Score </h5>
+                            </div>
+                            <div id="Usertscore" width="300" style="height:400px;">
+
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card shadow mb-2">
+                            <div class="card-header py-3">
+                                <h5 class="m-0 font-weight-bold text-primary">User Average Soft Skill Score</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="card-body" id="Userescore" width="300" style="height:350px;">
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row col-md-12">
+                    <div class="col-md-6">
+                        <div class="card shadow mb-2">
+                            <div class="card-header py-3">
+                                <h5 class="m-0 font-weight-bold text-primary">
+                                    No. of simulations taken by - {{username}}
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <svg id="usersimulations" width="300" height="350" style="height:400px;overflow:inherit;margin-left:10%"></svg>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card shadow mb-2">
+                            <div class="card-header py-3">
+                                <h5 class="m-0 font-weight-bold text-primary">
+                                    {{username}} - Average TScore and Soft Score
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div id="tooltip" class="hidden">
+                                    <p>
+                                        <strong>Important Label Heading</strong>
+                                    </p>
+                                    <p><span id="value">100</span>%</p>
+                                </div>
+                                <svg id="piecharviz" width="300" height="350" style="height:385px;overflow:inherit;margin-left:10%">
+                                    <p><span id="value"></span></p>
+                                </svg>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <a href="../Home/Analysis" class=" btn_main">
+                     Go Back
+                </a>
+            </div>
+        </div>
+
+
+    </div>
+    </div>
+<script src="~/js/angular.js/angular.min.js"></script>
+    @*<script src="~/js/angular.js/angular.min.js"></script>*@
+    @*<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>*@
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <script>
+        var app = angular.module('roleapp', []);
+        app.controller('rolecontroller', function ($scope, $timeout) {
+            $scope.username = localStorage.getItem("UserName");
+        });
+
+        var UserID = localStorage.getItem("UserID");
+        var Role = localStorage.getItem("Role");
+        $.ajax({
+            url: Url + "get_user_assessment_daily_counts_forplot?userid=" + UserID,
+            type: 'GET',
+            processData: false,
+            contentType: false,
+            success: function (res) {
+                var tscorebyday = [];
+                var escorebyday = [];
+                var assessmentperday = [];
+                var tescore = [];
+                var piescore = 0;
+                var pietscore = 0;
+                for (var i = 0; i < res.length; i++) {
+                    tscorebyday.push({ "label": res[i].label, "value": res[i].tscore })
+                    escorebyday.push({ "label": res[i].label, "value": res[i].escore })
+                    assessmentperday.push({ "label": res[i].label, "value": res[i].count })
+                    piescore = piescore + parseFloat(res[i].escore);
+                    pietscore = pietscore + parseFloat(res[i].tscore);
+                }
+                tescore.push({ "label": "TScore", "value": pietscore / res.length })
+                tescore.push({ "label": "SoftSscore", "value": piescore / res.length })
+                plotUserBarChart(tscorebyday, "Usertscore", "TScore");
+                plotUserBarChart(escorebyday, "Userescore", "SoftScore");
+                plotUserBarChart(assessmentperday, "usersimulations", "No.of Simulations");
+                plotUserPieChart(tescore);
+                //piechart(tescore);
+            },
+            error: function (xhr, status, error) {
+                console.log('error fetching  data')
+            }
+        });
+
+
+    </script>
+<script>
+    function plotUserBarChart(data, param, tooltiplabel) {
+        // set the dimensions and margins of the graph
+        var margin = { top: 30, right: 30, bottom: 90, left: 100 },
+            width = 400 - margin.left - margin.right,
+            height = 400 - margin.top - margin.bottom;
+
+        // append the svg object to the body of the page
+        var svg = d3.select("#" + param)
+            .append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+            .attr("transform",
+                "translate(" + margin.left + "," + margin.top + ")");
+
+        var tooltip = d3.select("body").append("div").attr("class", "toolTip");
+        // Parse the Data
+
+        // X axis
+        var x = d3.scaleBand()
+            .range([0, width])
+            .domain(data.map(function (d) { return d.label; }))
+            .padding(0.2);
+        svg.append("g")
+            .attr("transform", "translate(0," + height + ")")
+            .call(d3.axisBottom(x))
+            .selectAll("text")
+            .attr("transform", "translate(-10,0)rotate(-45)")
+            .style("text-anchor", "end");
+
+        // Add Y axis
+        var y = d3.scaleLinear()
+            .domain([0, 10])
+            .range([height, 0]);
+        svg.append("g")
+            .call(d3.axisLeft(y));
+
+        // Bars
+        svg.selectAll("mybar")
+            .data(data)
+            .enter()
+            .append("rect")
+            .attr("x", function (d) { return x(d.label); })
+            .attr("width", x.bandwidth())
+            .attr("fill", "steelblue")
+            // no bar at the beginning thus:
+            .attr("height", function (d) { return height - y(0); }) // always equal to 0
+            .attr("y", function (d) { return y(0); })
+            .on("mousemove", function (d) {
+                tooltip
+                    .style("left", d3.event.pageX - 50 + "px")
+                    .style("top", d3.event.pageY - 70 + "px")
+                    .style("display", "inline-block")
+                    .html((tooltiplabel) + "<br>" + ":" + (d.value));
+            })
+            .on("mouseout", function (d) { tooltip.style("display", "none"); });
+
+        // Animation
+        svg.selectAll("rect")
+            .transition()
+            .duration(800)
+            .attr("y", function (d) { return y(d.value); })
+            .attr("height", function (d) { return height - y(d.value); })
+            .delay(function (d, i) { console.log(i); return (i * 100) })
+
+
+    }
+
+
+
+    function plotUserPieChart(data) {
+        var tooltip = d3.select("#piecharviz").append("div").attr("class", "toolTip");
+
+        var width = 480
+        height = 350
+        margin = 70
+
+        // The radius of the pieplot is half the width or half the height (smallest one). I subtract a bit of margin.
+        var radius = Math.min(width, height) / 2 - margin
+
+        // append the svg object to the div called 'my_dataviz'
+        var svg = d3.select("#piecharviz")
+            .append("svg")
+            .attr("width", width)
+            .attr("height", height)
+            .append("g")
+            .attr("transform", "translate(" + width / 2.5 + "," + height / 3 + ")");
+
+        // set the color scale
+        var color = d3.scaleOrdinal()
+            .range(["#008000ab", "orange", "#7b6888", "#6b486b", "#a05d56"]);
+
+        // Compute the position of each group on the pie:
+        var pie = d3.pie()
+            .sort(null) // Do not sort group by size
+            .value(function (d) { return d.value.value; })
+        var data_ready = pie(d3.entries(data))
+
+        // The arc generator
+        var arc = d3.arc()
+            .innerRadius(radius * 0.5)         // This is the size of the donut hole
+            .outerRadius(radius * 0.8)
+
+        // Another arc that won't be drawn. Just for labels positioning
+        var outerArc = d3.arc()
+            .innerRadius(radius * 0.9)
+            .outerRadius(radius * 0.9)
+
+        // Build the pie chart: Basically, each part of the pie is a path that we build using the arc function.
+        svg
+            .selectAll('allSlices')
+            .data(data_ready)
+            .enter()
+            .append('path')
+            .attr('d', arc)
+            .attr('fill', function (d) { return (color(d.data.value.label)) })
+            .attr("stroke", "white")
+            .style("stroke-width", "2px")
+            .style("opacity", 0.7)
+
+        // Add the polylines between chart and labels:
+        svg
+            .selectAll('allPolylines')
+            .data(data_ready)
+            .enter()
+            .append('polyline')
+            .attr("stroke", "black")
+            .style("fill", "none")
+            .attr("stroke-width", 1)
+            .attr('points', function (d) {
+                var posA = arc.centroid(d) // line insertion in the slice
+                var posB = outerArc.centroid(d) // line break: we use the other arc generator that has been built only for that
+                var posC = outerArc.centroid(d); // Label position = almost the same as posB
+                var midangle = d.startAngle + (d.endAngle - d.startAngle) / 2 // we need the angle to see if the X position will be at the extreme right or extreme left
+                posC[0] = radius * 0.95 * (midangle < Math.PI ? 1 : -1); // multiply by 1 or -1 to put it on the right or on the left
+                return [posA, posB, posC]
+            })
+            .on("mouseover", function (d) {
+                tooltip
+                    .style("left", d3.event.pageX + "px")
+                    .style("top", d3.event.pageY + "px")
+                    .style("opacity", 1)
+                    .select("#value")
+                    .text(d.value);
+            })
+
+        // Add the polylines between chart and labels:
+        svg
+            .selectAll('allLabels')
+            .data(data_ready)
+            .enter()
+            .append('text')
+            .text(function (d) { console.log(d.data.value.key); return d.data.value.label })
+            .attr('transform', function (d) {
+                var pos = outerArc.centroid(d);
+                var midangle = d.startAngle + (d.endAngle - d.startAngle) / 2
+                pos[0] = radius * 0.99 * (midangle < Math.PI ? 1 : -1);
+                return 'translate(' + pos + ')';
+            })
+            .style('text-anchor', function (d) {
+                var midangle = d.startAngle + (d.endAngle - d.startAngle) / 2
+                return (midangle < Math.PI ? 'start' : 'end')
+            })
+
+    }
+
+
+
+    function piechart(tescore) {
+        var tooltip = d3.select("#piecharviz").append("div").attr("class", "toolTip");
+        var w = 300;
+        var h = 300;
+
+        var dataset = [tescore[0].value, tescore[1].value];
+
+        var outerRadius = w / 2;
+        var innerRadius = 0;
+        var arc = d3.arc()
+            .innerRadius(innerRadius)
+            .outerRadius(outerRadius);
+
+        var pie = d3.pie();
+
+        // Easy colors accessible via a 10-step ordinal scale
+        // var color = d3.scale.category10();
+        var color = d3.scaleOrdinal(d3.schemeCategory10);
+        // Create SVG element
+        var svg = d3.select("#piecharviz")
+            .append("svg")
+            .attr("width", w)
+            .attr("height", h);
+
+        // Set up groups
+        var arcs = svg.selectAll("g.arc")
+            .data(pie(dataset))
+            .enter()
+            .append("g")
+            .attr("class", "arc")
+            .attr("transform", "translate(" + outerRadius + "," + outerRadius + ")")
+            .on("mouseover", function (d) {
+                d3.select("#tooltip")
+                    .style("left", d3.event.pageX + "px")
+                    .style("top", d3.event.pageY + "px")
+                    .style("opacity", 1)
+                    .select("#value")
+                    .text(d.value);
+            })
+            .on("mouseout", function () {
+                // Hide the tooltip
+                d3.select("#tooltip")
+                    .style("opacity", 0);;
+            });
+
+        // Draw arc paths
+        arcs.append("path")
+            .attr("fill", function (d, i) {
+                return color(i);
+            })
+            .attr("d", arc);
+
+        // Labels
+        arcs.append("text")
+            .attr("transform", function (d) {
+                return "translate(" + arc.centroid(d) + ")";
+            })
+            .attr("text-anchor", "middle")
+            .text(function (d) {
+                return d.value;
+            });
+    }
+
+</script>
+    <style>
+        text {
+            font-family: sans-serif;
+            font-size: 12px;
+            /*fill: white;*/
+        }
+
+        #tooltip {
+            position: absolute;
+            width: 200px;
+            height: auto;
+            padding: 10px;
+            background-color: white;
+            -webkit-border-radius: 10px;
+            -moz-border-radius: 10px;
+            border-radius: 10px;
+            -webkit-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+            -mox-box-shadow: 4px 4px 4px 10px rgba(0, 0, 0, 0.4);
+            box-shadow: 4px 4px 10px rbga(0, 0, 0, 0.4) pointer-events: none;
+        }
+
+            #tooltip.hidden {
+                opacity: 0;
+            }
+
+            #tooltip p {
+                margin: 0;
+                font-family: sans-serif;
+                font-size: 16px;
+                line-height: 20px;
+            }
+    </style>
+    <script>
+
+    </script>
+
+
